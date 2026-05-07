@@ -6,6 +6,8 @@ int main()
 
 	bool		is_running = true;
 
+	std::cout << "\n\n========EX00 TEST========\n\n";
+
 	while (is_running)
 	{
 		std::cout << "\nEnter HEAP or STACK to create a Zombie or EXIT to quit: ";
