@@ -1,38 +1,47 @@
 #include "Replace.hpp"
 
-static void	_replace(std::string line, std::string filename, std::string s1, std::string s2)
+static void	_replace(std::ofstream &new_file, std::string line, std::string &s1, std::string &s2)
 {
-	std::string new_filename = filename + ".replace";
-	std::ofstream new_file(new_filename.c_str());
+	size_t start_pos = 0;
+	size_t found_pos;
 
-	std::string	modified_line;
-	std::string	temp;
-
-	size_t		len = strlen(s1.c_str());
-	const char	*found;
-
-	int i = 0;
-
-	found = strstr(line.c_str(), s1.c_str());
-	if (!found)
-		new_file << modified_line << "\n";
-	else
+	while ((found_pos = line.find(s1, start_pos)) != std::string::npos)
 	{
-		temp = line.substr(found + len);
+		new_file << line.substr(start_pos, found_pos - start_pos);
+		new_file << s2;
+		start_pos = found_pos + s1.length();
 	}
+
+	new_file << line.substr(start_pos) << "\n";
 }
 
 void	open_file(std::string filename, std::string s1, std::string s2)
 {
+	if (s1.empty())
+		return;
+
+	std::ifstream file(filename.c_str());
+	if (!file.is_open())
+	{
+		std::cerr << "Error: Could not open file.\n";
+		return;
+	}
+
+	std::string new_filename = filename + ".replace";
+	std::ofstream new_file(new_filename.c_str());
+	if (!new_file.is_open())
+	{
+		std::cerr << "Error: Could not create file.\n";
+		file.close();
+		return;
+	}
+
 	std::string line;
-	std::ifstream file;
-
-	file.open(filename.c_str());
-
-	std::cout << s1 << s2;
-
-	while(std::getline(file, line))
-		_replace(line, filename, s1, s2);
+	while (std::getline(file, line))
+	{
+		_replace(new_file, line, s1, s2);
+	}
 
 	file.close();
+	new_file.close();
 }

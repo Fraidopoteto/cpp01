@@ -34,5 +34,5 @@ int main(int argc, char **argv)
 		s1 = argv[2];
 		s2 = argv[3];
 	}
-	create_file(filename, s1, s2);
+	open_file(filename, s1, s2);
 }
